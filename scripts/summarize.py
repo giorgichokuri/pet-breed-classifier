@@ -37,6 +37,10 @@ for f in sorted(EXP.glob("*/optimization.json")):
               f"ONNX vs PyTorch max abs difference: {o['onnx_vs_torch_max_abs_diff']:.1e}; "
               f"evaluated on {o['eval_images']} test images; CPU threads: {o['cpu_threads']}", "",
               pd.DataFrame(o["variants"]).to_markdown(index=False), ""]
+    if "quantization_sweep" in o:
+        lines += [f"### INT8 quantization recipes (chosen by validation accuracy: {o['chosen_recipe']}; "
+                  f"FP32 validation accuracy {o['fp32_val_acc']})", "",
+                  pd.DataFrame(o["quantization_sweep"]).to_markdown(index=False), ""]
     conf = f.parent / "most_confused.csv"
     if conf.exists():
         lines += ["### Most confused breed pairs (best model)", "",
