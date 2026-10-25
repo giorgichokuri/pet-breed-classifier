@@ -1,0 +1,7 @@
+{
+  "test_acc": 0.9131,
+  "test_top5": 0.9926,
+  "macro_f1": 0.9117,
+  "species_acc": 0.9959,
+  "n_test": 3669
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "run": "e3_resnet18_finetune",
+    "calibration": "MinMax",
+    "calib_images": 200,
+    "fp32_val_acc": 0.9312,
+    "int8_val_acc": 0.9203
+  },
+  {
+    "run": "e5_efficientnet_b0_finetune",
+    "calibration": "Percentile",
+    "calib_images": 32,
+    "fp32_val_acc": 0.9402,
+    "int8_val_acc": 0.8134
+  },
+  {
+    "run": "e5_efficientnet_b0_finetune",
+    "calibration": "Entropy",
+    "calib_images": 32,
+    "fp32_val_acc": 0.9402,
+    "int8_val_acc": 0.3877
+  }
+]

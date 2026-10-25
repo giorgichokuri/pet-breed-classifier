@@ -1,0 +1,18 @@
+{
+  "test_acc": 0.8809,
+  "test_top5": 0.9836,
+  "macro_f1": 0.8775,
+  "species_acc": 0.9913,
+  "n_test": 3669,
+  "run": "e3_resnet18_finetune",
+  "model": "resnet18",
+  "pretrained": true,
+  "freeze": false,
+  "aug": "basic",
+  "params": 11195493,
+  "trainable_params": 11195493,
+  "best_epoch": 5,
+  "best_val_acc": 0.9312,
+  "epochs_run": 10,
+  "train_minutes": 3.78
+}

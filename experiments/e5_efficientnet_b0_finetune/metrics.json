@@ -1,0 +1,18 @@
+{
+  "test_acc": 0.9131,
+  "test_top5": 0.9926,
+  "macro_f1": 0.9117,
+  "species_acc": 0.9959,
+  "n_test": 3669,
+  "run": "e5_efficientnet_b0_finetune",
+  "model": "efficientnet_b0",
+  "pretrained": true,
+  "freeze": false,
+  "aug": "basic",
+  "params": 4054945,
+  "trainable_params": 4054945,
+  "best_epoch": 10,
+  "best_val_acc": 0.9402,
+  "epochs_run": 15,
+  "train_minutes": 6.3
+}

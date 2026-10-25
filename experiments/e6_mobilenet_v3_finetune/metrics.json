@@ -1,0 +1,18 @@
+{
+  "test_acc": 0.8962,
+  "test_top5": 0.9907,
+  "macro_f1": 0.8951,
+  "species_acc": 0.9932,
+  "n_test": 3669,
+  "run": "e6_mobilenet_v3_finetune",
+  "model": "mobilenet_v3_large",
+  "pretrained": true,
+  "freeze": false,
+  "aug": "basic",
+  "params": 4249429,
+  "trainable_params": 4249429,
+  "best_epoch": 5,
+  "best_val_acc": 0.9366,
+  "epochs_run": 10,
+  "train_minutes": 4.06
+}

@@ -1,0 +1,41 @@
+,precision,recall,f1-score,support
+Abyssinian,0.8737,0.8469,0.8601,98.0
+American Bulldog,0.687,0.9,0.7792,100.0
+American Pit Bull Terrier,0.7778,0.35,0.4828,100.0
+Basset Hound,0.9457,0.87,0.9062,100.0
+Beagle,0.87,0.87,0.87,100.0
+Bengal,0.7541,0.92,0.8288,100.0
+Birman,0.7818,0.86,0.819,100.0
+Bombay,0.8632,0.9318,0.8962,88.0
+Boxer,0.8571,0.9091,0.8824,99.0
+British Shorthair,0.9512,0.78,0.8571,100.0
+Chihuahua,0.9053,0.86,0.8821,100.0
+Egyptian Mau,0.9032,0.866,0.8842,97.0
+English Cocker Spaniel,0.94,0.94,0.94,100.0
+English Setter,0.9574,0.9,0.9278,100.0
+German Shorthaired,0.8609,0.99,0.9209,100.0
+Great Pyrenees,0.9697,0.96,0.9648,100.0
+Havanese,0.8716,0.95,0.9091,100.0
+Japanese Chin,0.9612,0.99,0.9754,100.0
+Keeshond,1.0,0.9899,0.9949,99.0
+Leonberger,1.0,0.98,0.9899,100.0
+Maine Coon,0.8778,0.79,0.8316,100.0
+Miniature Pinscher,0.9355,0.87,0.9016,100.0
+Newfoundland,0.9706,0.99,0.9802,100.0
+Persian,0.9326,0.83,0.8783,100.0
+Pomeranian,0.9697,0.96,0.9648,100.0
+Pug,0.9519,0.99,0.9706,100.0
+Ragdoll,0.7212,0.75,0.7353,100.0
+Russian Blue,0.9109,0.92,0.9154,100.0
+Saint Bernard,0.9065,0.97,0.9372,100.0
+Samoyed,0.97,0.97,0.97,100.0
+Scottish Terrier,0.9604,0.9798,0.97,99.0
+Shiba Inu,0.9515,0.98,0.9655,100.0
+Siamese,0.8878,0.87,0.8788,100.0
+Sphynx,0.9314,0.95,0.9406,100.0
+Staffordshire Bull Terrier,0.6078,0.6966,0.6492,89.0
+Wheaten Terrier,0.949,0.93,0.9394,100.0
+Yorkshire Terrier,0.9895,0.94,0.9641,100.0
+accuracy,0.8937,0.8937,0.8937,0.8937
+macro avg,0.8961,0.8932,0.8909,3669.0
+weighted avg,0.897,0.8937,0.8916,3669.0
