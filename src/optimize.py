@@ -8,9 +8,12 @@ and experiments/<run>/optimization.json with the comparison tables.
 Why: FP32 stores every weight in 4 bytes; INT8 stores it in 1 byte. The model gets ~4x
 smaller and often faster on CPU, at the cost of an accuracy drop that we measure.
 
-Static INT8 quantization is sensitive to the architecture. Quantizing every operator with
-min/max ranges works for plain CNNs such as ResNet, but EfficientNet's SiLU activations and
-squeeze-and-excitation blocks (Sigmoid, Mul) have outlier values, and accuracy can collapse.
+Static INT8 quantization can lose a lot of accuracy, for two known reasons:
+  1. On x86 CPUs without VNNI instructions, ONNX Runtime multiplies uint8 activations by int8
+     weights with 16-bit intermediate sums, which can saturate (overflow). The fix is to use
+     7-bit weights (reduce_range=True) or uint8 weights (U8U8).
+  2. EfficientNet's SiLU activations and squeeze-and-excitation blocks (Sigmoid, Mul) have
+     outlier values that 8 bits represent poorly, so we also try quantizing only Conv/Gemm.
 So we try several quantization recipes, choose the one with the best VALIDATION accuracy
 (the test set is never used for choices) and report its test accuracy.
 """
@@ -33,12 +36,13 @@ from .config import IMG_SIZE
 from .data import load_datasets
 from .utils import load_checkpoint, write_json
 
-# name -> (operator types to quantize (None = all supported), calibration method)
+# name -> settings: operator types to quantize (None = all supported), 7-bit weights, weight type
 RECIPES = {
-    "all_ops_minmax": (None, CalibrationMethod.MinMax),
-    "conv_gemm_minmax": (["Conv", "Gemm", "MatMul"], CalibrationMethod.MinMax),
-    "conv_gemm_percentile": (["Conv", "Gemm", "MatMul"], CalibrationMethod.Percentile),
-    "conv_gemm_entropy": (["Conv", "Gemm", "MatMul"], CalibrationMethod.Entropy),
+    "all_ops_u8s8": dict(op_types=None, reduce_range=False, weight_type=QuantType.QInt8),
+    "all_ops_u8s8_reduce_range": dict(op_types=None, reduce_range=True, weight_type=QuantType.QInt8),
+    "all_ops_u8u8": dict(op_types=None, reduce_range=False, weight_type=QuantType.QUInt8),
+    "conv_gemm_u8s8_reduce_range": dict(op_types=["Conv", "Gemm", "MatMul"], reduce_range=True,
+                                        weight_type=QuantType.QInt8),
 }
 
 
@@ -64,9 +68,11 @@ class ImageReader(CalibrationDataReader):
         return next(self.items, None)
 
 
-def quantize(prep_path: Path, int8_path: Path, calib_ds, op_types=None, method=CalibrationMethod.MinMax):
-    kwargs = dict(quant_format=QuantFormat.QDQ, per_channel=True, calibrate_method=method,
-                  activation_type=QuantType.QUInt8, weight_type=QuantType.QInt8)
+def quantize(prep_path: Path, int8_path: Path, calib_ds, op_types=None, reduce_range=False,
+             weight_type=QuantType.QInt8):
+    kwargs = dict(quant_format=QuantFormat.QDQ, per_channel=True, reduce_range=reduce_range,
+                  calibrate_method=CalibrationMethod.MinMax,
+                  activation_type=QuantType.QUInt8, weight_type=weight_type)
     if op_types:
         kwargs["op_types_to_quantize"] = op_types
     quantize_static(str(prep_path), str(int8_path), ImageReader(calib_ds), **kwargs)
@@ -133,10 +139,9 @@ def main():
     fp32_val = accuracy(ort_fn(sess32), val_ds)
     sweep = []
     for name in a.recipes:
-        op_types, method = RECIPES[name]
         cand = out / f"model_int8_{name}.onnx"
         t0 = time.time()
-        quantize(prep, cand, val_ds, op_types, method)
+        quantize(prep, cand, val_ds, **RECIPES[name])
         sess = session(cand)
         row = {"recipe": name, "val_acc": accuracy(ort_fn(sess), val_ds),
                "size_mb": round(cand.stat().st_size / 1e6, 2), "latency_ms": latency_ms(ort_fn(sess), x1),
@@ -168,9 +173,9 @@ def main():
     write_json(Path(a.ckpt).parent / "optimization.json", result)
 
     print(f"ONNX vs PyTorch max |diff| = {max_diff:.2e}")
-    print(f"{'variant':<34}{'size MB':>9}{'latency ms':>12}{'test acc':>10}")
+    print(f"{'variant':<44}{'size MB':>9}{'latency ms':>12}{'test acc':>10}")
     for r in rows:
-        print(f"{r['variant']:<34}{r['size_mb']:>9}{r['latency_ms']:>12}{r['test_acc']:>10}")
+        print(f"{r['variant']:<44}{r['size_mb']:>9}{r['latency_ms']:>12}{r['test_acc']:>10}")
 
 
 if __name__ == "__main__":
