@@ -15,7 +15,9 @@ from PIL import Image, UnidentifiedImageError
 from src.inference import Predictor
 
 ROOT = Path(__file__).resolve().parent.parent
-MODEL_PATH = Path(os.getenv("MODEL_PATH", ROOT / "models" / "model_int8.onnx"))
+# FP32 ONNX by default: static INT8 lost too much accuracy for EfficientNet-B0 (see report, section 4).
+# Set MODEL_PATH=models/model_int8.onnx to serve a quantized model instead.
+MODEL_PATH = Path(os.getenv("MODEL_PATH", ROOT / "models" / "model.onnx"))
 MAX_BYTES = 10 * 1024 * 1024
 
 app = FastAPI(title="Pet Breed Classifier", description="37 cat and dog breeds (Oxford-IIIT Pet)")
