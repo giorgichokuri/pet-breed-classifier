@@ -1,0 +1,8 @@
+data/
+__pycache__/
+*.pyc
+.venv/
+.ipynb_checkpoints/
+experiments/*/best.pt
+experiments/smoke_*/
+models/model_prep.onnx
